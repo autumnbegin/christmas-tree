@@ -82,6 +82,34 @@
 </head>
 <body>
 
+    <!-- 背景音乐 -->
+    <audio id="bg-music" loop>
+        <source src="./assets/music/christmas-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 音乐控制按钮 -->
+    <button id="music-toggle" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid rgba(212, 175, 55, 0.5);
+        background: rgba(0, 0, 0, 0.6);
+        color: #d4af37;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
+    " title="播放/暂停音乐">
+        🎵
+    </button>
+
     <div id="loader">
         <div class="spinner"></div>
         <div class="loader-text">Loading Holiday Magic</div>
@@ -629,8 +657,35 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 composer.setSize(window.innerWidth, window.innerHeight);
             });
-            
-            
+
+            // 音乐控制
+            const bgMusic = document.getElementById('bg-music');
+            const musicToggle = document.getElementById('music-toggle');
+            let isPlaying = false;
+
+            musicToggle.addEventListener('click', () => {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicToggle.textContent = '🎵';
+                    musicToggle.style.opacity = '0.6';
+                } else {
+                    bgMusic.play();
+                    musicToggle.textContent = '⏸';
+                    musicToggle.style.opacity = '1';
+                }
+                isPlaying = !isPlaying;
+            });
+
+            musicToggle.addEventListener('mouseenter', () => {
+                musicToggle.style.transform = 'scale(1.1)';
+                musicToggle.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+            });
+
+            musicToggle.addEventListener('mouseleave', () => {
+                musicToggle.style.transform = 'scale(1)';
+                musicToggle.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+            });
+
             // 键盘快捷键管理
             window.addEventListener('keydown', (e) => {
                 if (e.key.toLowerCase() === 'r') {
@@ -646,6 +701,10 @@
                     console.log(`浏览进度: ${progress.current}/${progress.total}`);
                     console.log(`已查看: ${progress.viewed}, 剩余: ${progress.remaining}`);
                     console.log(`当前模式: ${PhotoGallery.viewManager.isRandomMode ? '随机' : '顺序'}`);
+                } else if (e.key.toLowerCase() === ' ') {
+                    // 空格键控制音乐播放/暂停
+                    e.preventDefault();
+                    musicToggle.click();
                 }
             });
         }
